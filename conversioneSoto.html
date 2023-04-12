@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conversion</title>
+  <style>
+ 
+
+    input[type="text"] {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+      box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+    }
+
+</style>
+
+
+
+  </style>
+</head>
+<body>
+  <div>
+    <input id="medida" type="text" placeholder="Ingrese el dato">
+    <h2 id="lbl_resultado"></h2>
+    <button onclick="EaD()">Euros a Dolares</button>
+    <button onclick="LaG()">Litros a Galones</button>
+    <button onclick="mA_A()">Metros a Kilometros</button>
+  </div> <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>
+    
+    <script>
+
+        let modelo1 = null;
+        // esto es lo primeo que se ejecuta al cargar la pagina
+        ( async ()=>{
+            console.log('cargando modelo')
+            // "detetien" o "hace esperar" a que cargue por completo el modelo
+            modelo1 = await tf.loadLayersModel('./modelo_EuDo/model.json')
+            console.log('modelo cargado correctamente')
+        })();
+        function EaD(){
+        const medida = document.getElementById('medida').value
+        const resultado = document.getElementById('lbl_resultado')
+        //asegurarnos que el modelo ya está cargado
+        if( modelo1 != null){
+            const tensor = tf.tensor1d([parseFloat(medida)])
+            let prediccion = modelo1.predict(tensor).dataSync()[0]
+            prediccion = prediccion.toFixed(2)
+            resultado.innerHTML = `${medida} Euro son ${prediccion} Dolares. `
+        } else {
+            console.log('Intente mas tarde')
+        }
+    }
+
+        let modelo2 = null;
+        // esto es lo primeo que se ejecuta al cargar la pagina
+        ( async ()=>{
+            console.log('cargando modelo')
+            // "detetien" o "hace esperar" a que cargue por completo el modelo
+            modelo2 = await tf.loadLayersModel('./modelo_LiGa/model.json')
+            console.log('modelo cargado correctamente')
+        })();
+        function LaG(){
+        const medida = document.getElementById('medida').value
+        const resultado = document.getElementById('lbl_resultado')
+        //asegurarnos que el modelo ya está cargado
+        if( modelo2 != null){
+            const tensor = tf.tensor1d([parseFloat(medida)])
+            let prediccion = modelo2.predict(tensor).dataSync()[0]
+            prediccion = prediccion.toFixed(2)
+            resultado.innerHTML = `${medida} Litros son ${prediccion} Galones. `
+        } else {
+            console.log('Intente mas tarde')
+        }
+    }
+    
+    let modelo3 = null;
+        // esto es lo primeo que se ejecuta al cargar la pagina
+        ( async ()=>{
+            console.log('cargando modelo')
+            // "detetien" o "hace esperar" a que cargue por completo el modelo
+            modelo3 = await tf.loadLayersModel('./modelo_mA_A/model.json')
+            console.log('modelo cargado correctamente')
+        })();
+    function mA_A(){
+            const medida = document.getElementById('medida')
+            const resultado = document.getElementById('lbl_resultado')
+            // celsius.value // obtiene el valor del input
+            //asegurarnos que el modelo ya está cargado
+            if( modelo3 != null){
+                const tensor = tf.tensor1d([parseInt(medida.value)])
+                let prediccion = modelo3.predict(tensor).dataSync()
+                prediccion = Math.round(prediccion)
+                resultado.innerHTML = `${medida.value} A son ${prediccion} mA. `
+        
+
+            }else{
+                console.log('Intente mas tarde')
+            }
+        }
+
+  
+    </script>
+</body>
+</html>
